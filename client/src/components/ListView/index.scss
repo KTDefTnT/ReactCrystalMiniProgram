@@ -1,0 +1,55 @@
+@import "../../app.scss";
+.crystal_list {
+  margin: 20rpx;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  box-sizing: padding-box;
+  .crystal_item {
+    width: 48%;
+    margin: 12rpx 0rpx;
+    background: #fff;
+    border-radius: 6rpx;
+    .crystal_image {
+      display: block;
+      width: 100%;
+      // width: calc(100% - 10rpx);
+      // margin: 0 5rpx;
+      border-radius: 10rpx;
+      box-sizing: border-box;
+    }
+    .crystal_content {
+      display: flex;
+      flex-direction: column;
+      padding: 10rpx;
+      .crystal_model {
+        font-size: 40rpx;
+        color: $danger-color;
+      }
+      .crystal_desc {
+        font-size: 32rpx;
+        line-height: 36rpx;
+        font-weight: 700;
+        color: $dark-font-color;
+        margin-bottom: 20rpx;
+        @include ellipse(1);
+      }
+      .crystal_info {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 5rpx;
+        .crystal_like {
+          image {
+            width: 50rpx;
+            height: 50rpx;
+            margin-left: 15rpx;
+            vertical-align: sub;
+          }
+        }
+      }
+    }
+  }
+}

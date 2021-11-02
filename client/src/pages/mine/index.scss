@@ -1,0 +1,72 @@
+@import "@src/app.scss";
+.mine-container {
+  .header {
+    position: relative;
+    box-sizing: border-box;
+    padding: 40rpx;
+    height: 260px;
+    text-align: center;
+    background: $light-primary-color;
+    margin-bottom: 20rpx;
+    overflow: hidden;
+    // background-image: url('../../images/mine/mine_banner.png');
+    // background-size: cover;
+    .wave{
+      position: absolute;
+      height: 60rpx;
+      width: 100%;
+      bottom: 0px;
+      margin-left: -40rpx;
+    }
+    .wave::after, .wave::before{
+      content: "";
+      position: absolute;
+      width: 900rpx;
+      height: 900rpx;
+      top: 0;
+      left: 50%;
+      background-color: rgba(255, 255, 255, .7);
+      border-radius: 45%;
+      transform: translate(-50%, -100%) rotate(0);
+      animation: rotate 8s linear infinite;
+      z-index: 10;
+    }
+    .wave::after{
+      border-radius: 42% 40% 41% 40%;
+      background-color: rgba(255, 255, 255, .9);
+      transform: translate(-50%, -100%) rotate(0);
+      animation: rotate 8s linear -5s infinite;
+      z-index: 20;
+    }
+    
+    @keyframes rotate {
+      50% {
+        transform: translate(-50%, -103%) rotate(180deg);
+      } 100% {
+        transform: translate(-50%, -100%) rotate(360deg);
+      }
+    }
+
+    .content {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 30;
+      transform: translate(-50%, -50%);
+      .avatar {
+        display: block;
+        margin: 0 auto 20rpx;
+        width: 150rpx;
+        height: 150rpx;
+        border-radius: 50%;
+        box-shadow: 0px 0px 10rpx $border-color;
+      }
+      .user-info {
+        margin: 0 auto;
+        font-size: 42rpx;
+        color: $dark-font-color;
+      }
+    }
+    
+  }
+}

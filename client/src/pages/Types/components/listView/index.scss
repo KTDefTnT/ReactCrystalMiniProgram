@@ -1,0 +1,58 @@
+@import "../../../../app.scss";
+.list {
+  margin: 0rpx 20rpx;
+  padding-top: 20rpx;
+  display: flex;
+  flex-direction: column;
+  .item {
+    margin-bottom: 10rpx;
+    height: 160rpx;
+    display: flex;
+    justify-content: flex-end;
+    border: 1rpx solid #eee;
+    box-shadow: 0 0 4rpx green;
+    border-radius: 10rpx;
+    &.bg_1 {
+      background: linear-gradient(to right, $primary-color,rgba($primary-color,.5),rgba($primary-color,.1));
+    }
+    &.bg_2 {
+      background: linear-gradient(to right, $dark-primary-color,rgba($dark-primary-color,.5),rgba($dark-primary-color,.1));
+    }
+    &.bg_3 {
+      background: linear-gradient(to right, $light-primary-color,rgba($light-primary-color,.5),rgba($light-primary-color,.1));
+    }
+    &.bg_4 {
+      background: linear-gradient(to right, $sup-color,rgba($sup-color,.5),rgba($sup-color,.1));
+    }
+    &.bg_5 {
+      background: linear-gradient(to right, $primary-color1,rgba($primary-color1,.5),rgba($primary-color1,.1));
+    }
+    &.bg_6 {
+      background: linear-gradient(to right, $primary-color3,rgba($primary-color3,.5),rgba($primary-color3,.1));
+    }
+    &.bg_7 {
+      background: linear-gradient(to right, $primary-color2,rgba($primary-color2,.5),rgba($primary-color2,.1));
+    }
+    
+    
+    &.bg_8 {
+      background: linear-gradient(to right, $primary-color,rgba($primary-color,.5),rgba($primary-color,.1));
+    }
+    .item_content {
+      flex: 1;
+      align-self: center;
+      text-align: center;
+      color: #fff;
+      font-size: 40rpx;
+      font-weight: bold;
+      letter-spacing: .2em;
+    }
+    image {
+      display: inline-block;
+      flex-basis: 160rpx;
+      width: 160rpx;
+      height: 160rpx;
+      border-radius: 0px 10rpx 10rpx 0rpx;
+    }
+  }
+}

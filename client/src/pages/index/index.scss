@@ -1,0 +1,7 @@
+@import "../../app.scss";
+.index-container {
+  position: relative;
+  .content-container {
+    background-color: $bg-color;
+  }
+}

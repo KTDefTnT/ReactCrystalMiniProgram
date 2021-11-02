@@ -1,0 +1,17 @@
+@import '../../app.scss';
+.sheet-check-box {
+  .sheet-check-box__title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    .sheet-check-box__cancel, .sheet-check-box__confirm {
+      font-size: 32rpx;
+      padding: 10rpx 20rpx;
+      color: $light-font-color;
+    }
+    .sheet-check-box__confirm {
+      color: $title-color;
+    }
+  }
+}

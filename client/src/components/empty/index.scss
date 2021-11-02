@@ -1,0 +1,14 @@
+@import '../../app.scss';
+.empty_container {
+  Image {
+    display: block;
+    margin: 100rpx auto 50rpx;
+    width: 300rpx;
+  }
+  .notice {
+    margin: 30rpx 0rpx;
+    text-align: center;
+    font-size: 36rpx;
+    color: $dark-font-color;
+  }
+}
