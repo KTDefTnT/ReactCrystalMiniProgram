@@ -6,8 +6,11 @@
   justify-content: space-between;
   flex-wrap: wrap;
   box-sizing: padding-box;
-  .crystal_item {
+  .crystal_item { 
     width: 48%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     margin: 12rpx 0rpx;
     background: #fff;
     border-radius: 6rpx;
