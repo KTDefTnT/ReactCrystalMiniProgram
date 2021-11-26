@@ -25,12 +25,16 @@ export default class Mine extends Component {
   async componentDidShow () {
     let isAuth = await checkUserAuth(); // 用户授权
     if (isAuth) {
-      console.log('isAUTH', isAuth);
       Taro.getStorage({
         key: 'userInfo',
         success: res => {
           this.setState({
             userInfo: res.data
+          });
+        },
+        fail: () => {
+          this.setState({
+            userInfo: {}
           });
         }
       });
@@ -59,7 +63,7 @@ export default class Mine extends Component {
   }
 
   handleLogin(){
-    auth.checkUserAuth();
+    checkUserAuth();
   }
 
   render () {
@@ -67,7 +71,7 @@ export default class Mine extends Component {
     return (
       <View className='mine-container'>
         <View className="header">
-          <View className="wave"></View>
+          {/* <View className="wave"></View> */}
           <View className="content">
             <Image className="avatar" src={userInfo.avatarUrl ? userInfo.avatarUrl : AvatarImg} onClick={this.handleLogin.bind(this)}></Image>
             <View className="user-info">{userInfo.nickName}</View>

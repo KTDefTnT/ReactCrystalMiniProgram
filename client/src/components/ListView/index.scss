@@ -1,4 +1,5 @@
 @import "../../app.scss";
+
 .crystal_list {
   margin: 20rpx;
   display: flex;
@@ -6,53 +7,105 @@
   justify-content: space-between;
   flex-wrap: wrap;
   box-sizing: padding-box;
-  .crystal_item { 
-    width: 48%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    margin: 12rpx 0rpx;
-    background: #fff;
-    border-radius: 6rpx;
-    .crystal_image {
-      display: block;
-      width: 100%;
-      // width: calc(100% - 10rpx);
-      // margin: 0 5rpx;
-      border-radius: 10rpx;
-      box-sizing: border-box;
+
+  // .crystal_item {
+  //   width: calc(50% - 10px);
+  //   display: flex;
+  //   flex-direction: column;
+  //   justify-content: space-between;
+  //   margin: 12rpx 0rpx;
+  //   background: #fff;
+  //   border-radius: 6rpx;
+
+  //   .crystal_image {
+  //     display: block;
+  //     width: 100%;
+  //     // width: calc(100% - 10rpx);
+  //     // margin: 0 5rpx;
+  //     border-radius: 10rpx;
+  //     box-sizing: border-box;
+  //   }
+
+  //   .crystal_content {
+  //     display: flex;
+  //     flex-direction: column;
+  //     padding: 10rpx;
+
+  //     .crystal_model {
+  //       font-size: 40rpx;
+  //       color: $danger-color;
+  //     }
+
+  //     .crystal_desc {
+  //       font-size: 32rpx;
+  //       line-height: 36rpx;
+  //       font-weight: 700;
+  //       color: $dark-font-color;
+  //       margin-bottom: 20rpx;
+  //       @include ellipse(1);
+  //     }
+
+  //     .crystal_info {
+  //       display: flex;
+  //       flex-direction: row;
+  //       align-items: center;
+  //       justify-content: space-between;
+  //       padding-bottom: 5rpx;
+
+  //       .crystal_like {
+  //         image {
+  //           width: 50rpx;
+  //           height: 50rpx;
+  //           margin-left: 15rpx;
+  //           vertical-align: sub;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+}
+
+.crystal_list {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.crystal_queue {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  // flex-basis: calc(50% - 10px);
+}
+
+.crystal_item {
+  position: relative;
+  width: 100%;
+  margin: 2.5% 0;
+
+  .crystal_image {
+    display: block;
+    width: 100%;
+    // width: calc(100% - 10rpx);
+    // margin: 0 5rpx;
+    border-radius: 10rpx;
+    box-sizing: border-box;
+  }
+
+  .crystal_like {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 0px 5rpx;
+    border-radius: 0px 0px 0px 10px;
+    background-color:  hsla(0,0%,100%,.3);
+    box-shadow: 0 0 0 2rpx hsla(0,0%,100%,.3) inset,
+	            0 .5em 1em rgba(0, 0, 0, 0.6);
+    image {
+      width: 60px;
+      height: 60px;
     }
-    .crystal_content {
-      display: flex;
-      flex-direction: column;
-      padding: 10rpx;
-      .crystal_model {
-        font-size: 40rpx;
-        color: $danger-color;
-      }
-      .crystal_desc {
-        font-size: 32rpx;
-        line-height: 36rpx;
-        font-weight: 700;
-        color: $dark-font-color;
-        margin-bottom: 20rpx;
-        @include ellipse(1);
-      }
-      .crystal_info {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        padding-bottom: 5rpx;
-        .crystal_like {
-          image {
-            width: 50rpx;
-            height: 50rpx;
-            margin-left: 15rpx;
-            vertical-align: sub;
-          }
-        }
-      }
-    }
+    
   }
 }

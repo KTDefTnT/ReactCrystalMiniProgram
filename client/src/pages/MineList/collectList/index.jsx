@@ -6,6 +6,7 @@ import { View, Image, Text } from '@tarojs/components'
 import Empty from '@components/empty/index.jsx';
 
 import CollectActiveImg from '@images/collect_active.png';
+import ListView from '../../../components/ListView';
 import ShareImg from '@images/share.png';
 
 import './index.scss'
@@ -151,33 +152,13 @@ export default class CollectList extends Component {
     const { crystalList, positionClass, total } = this.state;
     return (
       <View>
-         {/* 列表部分 */}
-         <View className="crystal_list">
-          {
-            crystalList.map(item => (
-              <View className="crystal_item">
-                  <Image className="crystal_image" src={item.fileID} onClick={this.handleViewImage.bind(this, item.fileID)}></Image>
-                  <View className="crystal">
-                    <View className="crystal_desc">{item.description}</View>
-                    <View className="crystal_info">
-                      <View  className={`${positionClass[item.position]} 'crystal_tag'`}>{item.position}</View>
-                      <View className="crystal_model">
-                        <Text>{item.model}</Text>
-                        <Image onClick={this.handleCollect.bind(this, item)} className="collect" src={CollectActiveImg}></Image>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-              )
-            )
-          }
-        </View>
-        {/* 提示 */}
-        <Empty 
-          total={total}
-          list={crystalList}
-          type="collect"
-          emptyTitle="您还没有收藏"
+        {/* 列表部分 */}
+        <ListView
+          crystalList={this.state.crystalList}
+          isCollectList={true}
+          total={this.state.total}
+          handleViewImage={this.handleViewImage.bind(this)}
+          handleCollect={this.handleCollect.bind(this)}
         />
       </View>
     );

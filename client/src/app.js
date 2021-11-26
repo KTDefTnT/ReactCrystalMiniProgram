@@ -6,12 +6,11 @@ import 'taro-ui/dist/style/index.scss'
 import './app.scss'
 
 class App extends Component {
-
   componentDidMount () {
     if (process.env.TARO_ENV === 'weapp') {
       Taro.cloud.init({
-        // env: 'production-7gcqn3ctf155e0b2',
-        env: 'jiaotangguazi-3g8pm0e9fbbac512',
+        env: 'production-7gcqn3ctf155e0b2',
+        // env: 'jiaotangguazi-3g8pm0e9fbbac512',
         traceUser: true,
       })
     }

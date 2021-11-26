@@ -1,6 +1,4 @@
-// 云函数模板
-// 部署：在 cloud-functions/login 文件夹右击选择 “上传并部署”
-
+// 云函数入口文件
 const cloud = require('wx-server-sdk')
 
 // 初始化 cloud
@@ -9,6 +7,8 @@ cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
 });
 const db = cloud.database();
+// 晶瓷画数据表
+const crystalFile = db.collection('crystal_file');
 
 exports.main = async (event, context) => {
   let fileID = '';
@@ -18,10 +18,10 @@ exports.main = async (event, context) => {
       model,
       position,
       series,
+      fileIds,
       description
     } = event;
     const wxContext = cloud.getWXContext()
-    const crystalFile = db.collection('crystal_file');
 
     if (position === '') {
       return {
@@ -31,30 +31,22 @@ exports.main = async (event, context) => {
       }
     }
 
-    const existList = await crystalFile.where({
-      model
-    }).get();
-
-
-    let data = await cloud.uploadFile({
-      cloudPath: `crystal/${event.path}`,
-      fileContent: Buffer.from(event.file, 'base64'),
-    });
-    fileID = data.fileID;
-
-    await crystalFile.add({
-      data: {
-        name,
-        model,
-        fileID,
-        description,
-        position,
-        series,
-        openId: wxContext.OPENID,
-        createTime: new Date(),
-        updateTime: new Date()
-      }
-    });
+    for (let i = 0; i < fileIds.length; i++) {
+      await crystalFile.add({
+        data: {
+          name,
+          model,
+          fileID: fileIds[i],
+          description,
+          position,
+          series,
+          openId: wxContext.OPENID,
+          createTime: new Date(),
+          updateTime: new Date()
+        }
+      });
+    }
+    
     return {
       data: {},
       msg: '新增成功!',

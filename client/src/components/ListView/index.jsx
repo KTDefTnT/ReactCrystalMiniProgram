@@ -8,6 +8,38 @@ import CollectImg from "../../images/collect.png";
 
 import "./index.scss";
 
+const Node = ({
+  item,
+  isCollectList,
+  collectList,
+  handleLongPress,
+  handleViewImage,
+  handleCollect
+}) => {
+  return (
+    <View className="crystal_item" onLongPress={() => handleLongPress(item)}>
+      <Image
+        mode="widthFix"
+        className="crystal_image"
+        src={item.fileID}
+        onClick={() => handleViewImage(item.fileID)}
+      ></Image>
+      <View className="crystal_like">
+        <Image
+          onClick={() => handleCollect(item)}
+          className="collect"
+          src={
+            isCollectList
+              ? CollectActiveImg
+              : collectList.includes(item._id)
+              ? CollectActiveImg
+              : CollectImg
+          }
+        ></Image>
+      </View>
+    </View>
+  );
+};
 export default class ListView extends Component {
   constructor(props) {
     super(props);
@@ -25,7 +57,8 @@ export default class ListView extends Component {
 
   // 浏览图片
   handleViewImage(fileID) {
-    this.props.handleViewImage && this.props.handleViewImage(fileID);
+    const fileIds = this.props.crystalList.map(item => item.fileID);
+    this.props.handleViewImage && this.props.handleViewImage(fileID, fileIds);
   }
 
   // 收藏
@@ -34,7 +67,13 @@ export default class ListView extends Component {
   }
 
   render() {
-    const { collectList, crystalList, total } = this.props;
+    const { collectList, crystalList, total, isCollectList } = this.props;
+    // let leftList = [];
+    // let rightList = [];
+    // for (let i = 0; i < crystalList.length; i++) {
+    //   let item = crystalList[i];
+    //   i % 2 ? rightList.push(item) : leftList.push(item);
+    // }
     return (
       <View className="list">
         <View
@@ -44,39 +83,46 @@ export default class ListView extends Component {
               : "crystal_list"
           }
         >
-          {crystalList.map(item => {
-            return (
-              <View
-                className="crystal_item"
-                onLongPress={this.handleLongPress.bind(this, item)}
-              >
-                <Image
-                  mode="widthFix"
-                  className="crystal_image"
-                  src={item.fileID}
-                  onClick={this.handleViewImage.bind(this, item.fileID)}
-                ></Image>
-                <View className="crystal_content">
-                  <View className="crystal_model">{item.model}</View>
-                  <View className="crystal_desc">{item.description}</View>
-                  <View className="crystal_info">
-                    <Tags position={item.position} />
-                    <View className="crystal_like">
-                      <Image
-                        onClick={this.handleCollect.bind(this, item)}
-                        className="collect"
-                        src={
-                          collectList.includes(item._id)
-                            ? CollectActiveImg
-                            : CollectImg
-                        }
-                      ></Image>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            );
-          })}
+          <View className="crystal_queue">
+            {crystalList.map(item => (
+              <Node
+                item={item}
+                key={item._id}
+                isCollectList={isCollectList}
+                collectList={collectList}
+                handleLongPress={this.handleLongPress.bind(this)}
+                handleViewImage={this.handleViewImage.bind(this)}
+                handleCollect={this.handleCollect.bind(this)}
+              />
+            ))}
+          </View>
+          {/* <View className="crystal_queue">
+            {leftList.map(item => (
+              <Node
+                item={item}
+                key={item._id}
+                isCollectList={isCollectList}
+                collectList={collectList}
+                handleLongPress={this.handleLongPress.bind(this)}
+                handleViewImage={this.handleViewImage.bind(this)}
+                handleCollect={this.handleCollect.bind(this)}
+              />
+            ))}
+          </View>
+
+          <View className="crystal_queue">
+            {rightList.map(item => (
+              <Node
+                item={item}
+                key={item._id}
+                isCollectList={isCollectList}
+                collectList={collectList}
+                handleLongPress={this.handleLongPress.bind(this)}
+                handleViewImage={this.handleViewImage.bind(this)}
+                handleCollect={this.handleCollect.bind(this)}
+              />
+            ))}
+          </View> */}
         </View>
         {/* 提示 */}
         <Empty total={total} list={crystalList} />

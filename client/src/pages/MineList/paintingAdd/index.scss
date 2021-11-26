@@ -2,6 +2,15 @@
 .textarea_container {
   border-bottom: 0px;
 }
+.at-list__item-content  {
+  flex-basis: 100rpx;
+}
+.at-list__item-extra {
+  max-width: 500rpx;
+}
+.item-extra {
+  flex: 1;
+}
 .position_picker {
   padding-left: 27rpx;
 }

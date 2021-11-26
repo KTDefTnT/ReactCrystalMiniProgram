@@ -1,9 +1,9 @@
 import { Component } from "react";
 import Taro from "@tarojs/taro";
-import { checkUserAuth, isAdmin } from '../../../utils/auth';
+import { checkUserAuth, isAdmin } from "../../../utils/auth";
 import { View } from "@tarojs/components";
-import ListView from '../../../components/ListView';
-
+import ListView from "../../../components/ListView";
+import "./index.scss";
 export default class CrystalList extends Component {
   constructor(props) {
     super(props);
@@ -23,14 +23,17 @@ export default class CrystalList extends Component {
     Taro.setNavigationBarTitle({
       title: params.title
     });
-    this.setState({
-      position: params.id,
-      series: params.seriesId || "",
-      title: params.title
-    }, () => {
-      this.getCollectList();
-      this.getListData(this.state.position, this.state.series);
-    });
+    this.setState(
+      {
+        position: params.id,
+        series: params.seriesId || "",
+        title: params.title
+      },
+      () => {
+        this.getCollectList();
+        this.getListData(this.state.position, this.state.series);
+      }
+    );
   }
 
   // 获取当前的收藏的信息
@@ -56,10 +59,10 @@ export default class CrystalList extends Component {
     });
   }
 
-  handleViewImage(fileID) {
+  handleViewImage(fileID, fileIds) {
     Taro.previewImage({
       current: fileID,
-      urls: [fileID]
+      urls: fileIds
     });
   }
 
@@ -70,7 +73,7 @@ export default class CrystalList extends Component {
     Taro.cloud.callFunction({
       name: "crystal_list_by_position",
       data: {
-        pageNo: this.state.pageNo,
+        pageNo: reset ? 1 : this.state.pageNo,
         position,
         series
       },
@@ -91,7 +94,8 @@ export default class CrystalList extends Component {
             state.crystalList.length < data.total && !reset
               ? [...state.crystalList, ...data.list]
               : data.list,
-          total: data.total
+          total: data.total,
+          pageNo: reset ? 1 : state.pageNo
         }));
       },
       fail: () => {
@@ -108,7 +112,6 @@ export default class CrystalList extends Component {
     let isAuth = await checkUserAuth();
     if (!isAuth) return;
 
-    console.log('xx', this.state);
     const isCollected = this.state.collectList.includes(item._id);
     Taro.showLoading({
       title: isCollected ? "取消收藏中..." : "收藏中..."
@@ -147,14 +150,18 @@ export default class CrystalList extends Component {
     }
   }
 
-  async onPullDownRefresh() {
-    await this.handleViewAll(this.state.position, this.state.series);
-    Taro.stopPullDownRefresh();
+  onPullDownRefresh() {
+    this.setState({
+      crystalList: []
+    }, async () => {
+      await this.getListData(this.state.position, this.state.series);
+      Taro.stopPullDownRefresh();
+    })
   }
 
   // 管理员权限
   async handleLongPress(item) {
-    console.log("handleTongTap");
+    let _this = this;
     let hasAuth = await isAdmin();
     if (hasAuth) {
       // ! 待优化： 已被收藏的不能删除
@@ -166,19 +173,27 @@ export default class CrystalList extends Component {
             Taro.showLoading({
               title: "正在删除中..."
             });
-            Taro.cloud.callFunction({
-              name: "crystal_delete",
-              data: {
-                fileID: item.fileID,
-                id: item._id
-              },
-              success: async resData => {
+            Taro.cloud
+              .callFunction({
+                name: "crystal_delete",
+                data: {
+                  fileID: item.fileID,
+                  id: item._id
+                }
+              })
+              .then(async resData => {
                 await this.getCollectList();
-                await this.handleViewAll();
+                await this.getListData(
+                  _this.state.position,
+                  _this.state.series,
+                  true
+                );
                 Taro.hideLoading();
                 Taro.showToast({ title: resData.result.msg });
-              }
-            });
+              })
+              .catch(() => {
+                Taro.hideLoading();
+              });
           }
         },
         fail: () => {
@@ -189,17 +204,19 @@ export default class CrystalList extends Component {
   }
 
   render() {
-    return <View>
-      {/* 列表部分 */}
-      <ListView
-        crystalList={this.state.crystalList}
-        collectList={this.state.collectList}
-        total={this.state.total}
-        longPress={true}
-        handleLongPress={this.handleLongPress.bind(this)}
-        handleViewImage={this.handleViewImage.bind(this)}
-        handleCollect={this.handleCollect.bind(this)}
-      />
-    </View>
+    return (
+      <View>
+        {/* 列表部分 */}
+        <ListView
+          crystalList={this.state.crystalList}
+          collectList={this.state.collectList}
+          total={this.state.total}
+          longPress={true}
+          handleLongPress={this.handleLongPress.bind(this)}
+          handleViewImage={this.handleViewImage.bind(this)}
+          handleCollect={this.handleCollect.bind(this)}
+        />
+      </View>
+    );
   }
 }

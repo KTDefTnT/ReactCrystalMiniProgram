@@ -17,7 +17,7 @@ import {
   AtButton
 } from "taro-ui";
 
-// const options = [POSITIONS, POSITIONS[0].children];
+const options = [POSITIONS, POSITIONS[0].children];
 export default class PaintingAdd extends Component {
   constructor(props) {
     super(props);
@@ -31,9 +31,11 @@ export default class PaintingAdd extends Component {
       series: "", // 系列
       value: [0, 0],
       typeSeries: "",
-      index: '',
-      // positionOptions: options,
-      isOpened: false
+      index: "",
+      positionOptions: options,
+      isOpened: false,
+      fileIds: [],
+      isUploaded: false // 判断当前的是否成功上传
     };
   }
 
@@ -45,31 +47,55 @@ export default class PaintingAdd extends Component {
     };
   }
 
-  handleDescriptionChange = description => {
+  handleFiledChange = (key, value) => {
     this.setState({
-      description
+      [key]: value
     });
   };
 
-  handleUpload = files => {
+  handleFileUpload = files => {
     this.setState({
-      files
+      files,
+      fileIds: []
     });
-  };
+    Taro.showLoading({
+      title: "图片上传中..."
+    });
+    let promiseList = [];
+    for (let i = 0; i < files.length; i++) {
+      let url = files[i].url;
+      let path = url.slice(11);
+      let promise = new Promise((resolve, reject) => {
+        Taro.cloud.uploadFile({
+          cloudPath: `crystal/${path}`,
+          filePath: url,
+          // 成功回调
+          success: res => {
+            this.setState(state => ({
+              fileIds: [res.fileID, ...state.fileIds]
+            }));
+            resolve(true);
+          },
+          fail: () => {
+            reject();
+          }
+        });
+      });
 
-  handleModelChange = model => {
-    this.setState({
-      model
+      promiseList.push(promise);
+    }
+    
+    Promise.all(promiseList).then(res => {
+      Taro.hideLoading();
+    }).catch(() => {
+      Taro.cloud.deleteFile({
+        fileList: fileIds
+      });
+      Taro.showToast({
+        title: "晶瓷画上传失败！"
+      });
     });
-    return model;
-  };
-
-  handleNameChange = name => {
-    this.setState({
-      name
-    });
-    return name;
-  };
+  }
 
   onColumnChange = e => {
     let index = e.detail.value;
@@ -92,9 +118,11 @@ export default class PaintingAdd extends Component {
     const selectedSeries = selectedPosition.hasOwnProperty("children")
       ? selectedPosition.children[series]
       : "";
+
     let typeSeries = selectedSeries
-      ? selectedPosition.label
-      : `${selectedPosition.label}/${selectedSeries.label}`;
+      ? `${selectedPosition.label}/${selectedSeries.label}`
+      : selectedPosition.label;
+
     this.setState({
       position: selectedPosition.id,
       series: selectedSeries ? selectedSeries.id : "",
@@ -104,7 +132,6 @@ export default class PaintingAdd extends Component {
 
   // 单个选择
   handlePickerChange = e => {
-    console.log('333', e);
     let index = e.detail.value;
     const selectedPosition = POSITIONS[index];
     this.setState({
@@ -112,7 +139,7 @@ export default class PaintingAdd extends Component {
       position: selectedPosition.id,
       crystalName: selectedPosition.label
     });
-  }
+  };
 
   // 重置
   reset = () => {
@@ -127,13 +154,65 @@ export default class PaintingAdd extends Component {
       value: [0, 0],
       index: "",
       typeSeries: "",
-      // positionOptions: options,
+      positionOptions: options,
       isOpened: false
-    })
-  }
+    });
+  };
+
+  // upload
+  handleSubmit = () => {
+    const { fileIds, position, series, model, description, name } = this.state;
+    Taro.showLoading({
+      title: '晶瓷画新增中....'
+    });
+    //成功的回调
+    Taro.cloud.callFunction({
+      name: "crystal_upload",
+      data: {
+        fileIds,
+        position,
+        series,
+        model,
+        name,
+        description
+      },
+      success: _res => {
+        // 上传成功
+        // this.isUploaded = true;
+        Taro.showToast({
+          title: _res.result.msg,
+          icon: _res.result.type,
+          duration: 500
+        });
+        this.setState({
+          isUploaded: true
+        });
+        Taro.hideLoading();
+        Taro.showModal({
+          title: "提示",
+          content: "是否需要继续新增?",
+          success: modelInfo => {
+            if (modelInfo.confirm) {
+              this.reset();
+            } else if (modelInfo.cancel) {
+              Taro.switchTab({
+                url: "/pages/mine/index"
+              });
+            }
+          }
+        });
+      },
+      fail(_res) {
+        this.setState({
+          isUploaded: true
+        });
+        Taro.hideLoading();
+      }
+    });
+  };
 
   onSubmit = () => {
-    if (this.state.files.length === 0) {
+    if (this.state.fileIds.length === 0) {
       Taro.showToast({
         title: "请上传图片",
         icon: "none",
@@ -141,54 +220,25 @@ export default class PaintingAdd extends Component {
       });
       return;
     }
-    const { files, position, series, model, description, name } = this.state;
+
+    const { position } = this.state;
+
+    if (!position) {
+      Taro.showToast({
+        title: "请选择系列",
+        icon: "none",
+        duration: 500
+      });
+      return;
+    }
     Taro.showLoading({
       title: "晶瓷画新增中..."
     });
-    Taro.getFileSystemManager().readFile({
-      filePath: files[0].url, //选择图片返回的相对路径
-      encoding: "base64", //编码格式
-      success: res => {
-        //成功的回调
-        Taro.cloud.callFunction({
-          name: "crystal_upload",
-          data: {
-            path: `${model}_${Math.floor(Math.random() * 100000)}.png`,
-            file: res.data,
-            position,
-            series,
-            model,
-            name,
-            description
-          },
-          success: _res => {
-            Taro.showToast({
-              title: _res.result.msg,
-              icon: _res.result.type,
-              duration: 500
-            });
-            Taro.hideLoading();
-            Taro.showModal({
-              title: "提示",
-              content: "是否需要继续新增?",
-              success: modelInfo => {
-                if (modelInfo.confirm) {
-                  this.reset();
-                } else if (modelInfo.cancel) {
-                  Taro.switchTab({
-                    url: "/pages/mine/index"
-                  });
-                }
-              }
-            });
-          },
-          fail(_res) {
-            Taro.hideLoading();
-          }
-        });
-      }
+    this.setState({
+      isUploaded: true
     });
-    console.log("onSubmit", this.state);
+    // 保存
+    this.handleSubmit();
   };
 
   render() {
@@ -199,7 +249,9 @@ export default class PaintingAdd extends Component {
       name,
       model,
       positionOptions,
-      index
+      index,
+      value,
+      typeSeries
     } = this.state;
     return (
       <View className="index">
@@ -207,14 +259,14 @@ export default class PaintingAdd extends Component {
           <AtTextarea
             className="textarea_container"
             value={description}
-            onChange={this.handleDescriptionChange.bind(this)}
+            onChange={this.handleFiledChange.bind(this, "description")}
             maxLength={200}
             placeholder="请输入您的描述"
           />
           <AtImagePicker
             className="image_picker"
             files={files}
-            onChange={this.handleUpload.bind(this)}
+            onChange={this.handleFileUpload}
           />
           <Picker
             onChange={this.handlePickerChange.bind(this)}
@@ -244,7 +296,7 @@ export default class PaintingAdd extends Component {
             placeholder="名称"
             value={name}
             name="name"
-            onChange={this.handleNameChange.bind(this)}
+            onChange={this.handleFiledChange.bind(this, "name")}
           />
           <AtInput
             clear
@@ -253,7 +305,7 @@ export default class PaintingAdd extends Component {
             placeholder="型号"
             value={model}
             name="model"
-            onChange={this.handleModelChange.bind(this)}
+            onChange={this.handleFiledChange.bind(this, "model")}
           />
         </AtForm>
         <AtButton

@@ -11,7 +11,7 @@ const db = cloud.database();
 // 云函数入口函数
 exports.main = async (event, context) => {
   const { fileID, id } = event;
-  let deleteResult = {};
+  let deleteResult;
   try {
     const crystalFile = db.collection('crystal_file');
     // 获取当前的数据信息
@@ -23,8 +23,9 @@ exports.main = async (event, context) => {
     const resData = await crystalFile.where({
       _id: id
     }).remove();
-    
-    if (resData.stats.removed !== 0) {
+    console.log('resData', resData);
+    console.log('currInfo', currInfo.data[0].fileID);
+    if (resData.stats.removed !== 0 && currInfo.data[0].fileID) {
       // 删除文件
       deleteResult = await cloud.deleteFile({
         fileList: [fileID]
@@ -32,6 +33,7 @@ exports.main = async (event, context) => {
     }
 
     // 若有了deleteResult的数据 且stats不为0： 删除操作记录成功，但是删除文件不成功
+    console.log('delete', deleteResult);
     if(Object.keys(deleteResult).length === 0 && deleteResult.fileList.stats !== 0) {
       // 将数据还原
       crystalFile.add({data: currInfo.data[0]});

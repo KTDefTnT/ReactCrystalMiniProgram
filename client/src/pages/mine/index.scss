@@ -4,47 +4,20 @@
     position: relative;
     box-sizing: border-box;
     padding: 40rpx;
-    height: 260px;
+    height: 360px;
     text-align: center;
-    background: $light-primary-color;
-    margin-bottom: 20rpx;
-    overflow: hidden;
-    // background-image: url('../../images/mine/mine_banner.png');
-    // background-size: cover;
-    .wave{
+    background: rgba($primary-color, .1);
+    overflow: hidden;  
+    &::after {
+      content: '';
       position: absolute;
-      height: 60rpx;
-      width: 100%;
-      bottom: 0px;
-      margin-left: -40rpx;
-    }
-    .wave::after, .wave::before{
-      content: "";
-      position: absolute;
-      width: 900rpx;
-      height: 900rpx;
-      top: 0;
-      left: 50%;
-      background-color: rgba(255, 255, 255, .7);
-      border-radius: 45%;
-      transform: translate(-50%, -100%) rotate(0);
-      animation: rotate 8s linear infinite;
-      z-index: 10;
-    }
-    .wave::after{
-      border-radius: 42% 40% 41% 40%;
-      background-color: rgba(255, 255, 255, .9);
-      transform: translate(-50%, -100%) rotate(0);
-      animation: rotate 8s linear -5s infinite;
-      z-index: 20;
-    }
-    
-    @keyframes rotate {
-      50% {
-        transform: translate(-50%, -103%) rotate(180deg);
-      } 100% {
-        transform: translate(-50%, -100%) rotate(360deg);
-      }
+      top: -100px;
+      left: calc(50% - 260px);
+      width: 520px;
+      height: 200px;
+      box-shadow: 0 0 0 80px rgba($primary-color, .4), 0 0 0 140px rgba($primary-color, .2);
+      background-color: rgba($primary-color, .6);
+      border-radius: 100%;
     }
 
     .content {

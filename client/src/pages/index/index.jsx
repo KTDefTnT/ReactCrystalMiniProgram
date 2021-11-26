@@ -52,23 +52,6 @@ export default class Mine extends Component {
         <View className="content-container">
           {/* 搜索栏目 */}
           <CrystalTypes handleTypeClick={this.handleTypeClick}/>
-          {/* <AtTabs
-            className="select-container"
-            current={current}
-            tabList={tabList}
-            onClick={this.handleViewSub.bind(this)}
-          ></AtTabs> */}
-
-          {/* 列表部分 */}
-          {/* <ListView
-            crystalList={this.state.crystalList}
-            collectList={this.state.collectList}
-            total={total}
-            longPress={true}
-            handleLongPress={this.handleLongPress}
-            handleViewImage={this.handleViewImage}
-            handleCollect={this.handleCollect}
-          /> */}
         </View>
       </View>
     );
